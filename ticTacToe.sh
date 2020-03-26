@@ -1,4 +1,5 @@
 #!/bin/bash -x
+
 declare -A gameBoard
 
 playerOne="a"
@@ -9,6 +10,7 @@ cPosition=0
 noOfRows=3
 noOfColumns=3
 temporaryVar=0
+count=0
 
 initializeBoard(){
 	for (( r=0; r<$noOfRows; r++ )); do
@@ -103,11 +105,11 @@ checkWin(){
 		fi
 }
 computerTurn(){
-		checkWinPlay
+		checkWinBlockPlay $playerTwoCPU
 			return
 }
-checkWinPlay(){
-		playerVariable=$playerTwoCPU
+checkWinBlockPlay(){
+		playerVariable=$1
 
 		if [[ ${gameBoard[0,0]} == "$playerVariable"  && ${gameBoard[0,1]} == "$playerVariable" && ${gameBoard[0,2]} == "+" ]]; then
 			gameBoard[0,2]=$playerTwoCPU
@@ -166,7 +168,11 @@ checkWinPlay(){
 		elif [[ ${gameBoard[0,2]} == "$playerVariable"  && ${gameBoard[1,1]} == "+" && ${gameBoard[2,0]} == "$playerVariable" ]]; then
 			gameBoard[1,1]=$playerTwoCPU
 		else
-			generatedNum=$((RANDOM%9))
+			if [[ $count -eq 0 ]]; then
+					((count++))
+					checkWinBlockPlay $playerOne
+			else
+				generatedNum=$((RANDOM%9))
       		r=$(($generatedNum/3))
       		c=$(($generatedNum%3))
 
@@ -176,9 +182,9 @@ checkWinPlay(){
 					gameBoard[$r,$c]=$playerTwoCPU
          		return
      			fi
+			fi
 		fi
 }
-
 wantToPlay(){
    read -p "Would You Like To Start game Y/N ?" isStart
    if [[ $isStart == Y || $isStart == y ]]; then
