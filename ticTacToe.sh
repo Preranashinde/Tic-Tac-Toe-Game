@@ -6,7 +6,8 @@ declare -A board
 
 noOfRows=3
 noOfColumns=3
-
+X="x"
+O="o"
 initializeBoard()
 {
 	for (( r=1; r<=$noOfRows; r++ ))
@@ -34,5 +35,16 @@ displayBoard()
 	echo "---------------"
 
 }
+letterCheck()
+{
+letterCheck=$((RANDOM%2))
+case $letterCheck in 
+	0) echo "You have assigned : "$O
+	;;
+	1) echo "You have assigned : "$X
+	;;
+esac
+}
 
 displayBoard
+letterCheck
