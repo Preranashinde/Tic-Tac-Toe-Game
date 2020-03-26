@@ -34,7 +34,7 @@ toss()
 		echo "Player1 Will Play First"
 		startToPlay
 	else
-		echo "PlayerTwoCPU Will Play First"
+		echo "PlayerCPU Will Play First"
 		temporaryVar=1
 		startToPlay
 	fi
