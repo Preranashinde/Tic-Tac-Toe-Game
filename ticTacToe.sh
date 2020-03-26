@@ -46,5 +46,14 @@ case $letterCheck in
 esac
 }
 
+tossTheCoin(){
+	if [[ $((RANDOM%2)) -eq 0 ]]; then
+		echo "Player1 Will Play First"
+	else
+		echo "Computer Will Play First"
+	fi
+}
+
 displayBoard
 letterCheck
+tossTheCoin
