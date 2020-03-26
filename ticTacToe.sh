@@ -180,20 +180,18 @@ checkWinBlockPlay(){
          gameBoard[2,0]=$playerTwoCPU
       elif [[ ${gameBoard[2,2]} == "+" ]]; then
          gameBoard[2,2]=$playerTwoCPU
-		# Center
+		#Centre
 		elif [[ ${gameBoard[1,1]} == "+" ]]; then
-         		gameBoard[1,1]=$playerTwoCPU
-		else
-			generatedNum=$((RANDOM%9))
-      			r=$(($generatedNum/3))
-      			c=$(($generatedNum%3))
-
-	      		if [[ ${gameBoard[$r,$c]} ==  $playerOne || ${gameBoard[$r,$c]} == $playerTwoCPU ]]; then
-		 		computerTurn
-	      		else
-				gameBoard[$r,$c]=$playerTwoCPU
-         		return
-     			fi
+         gameBoard[1,1]=$playerTwoCPU
+		# Sides
+		elif [[ ${gameBoard[0,1]} == "+" ]]; then
+         gameBoard[0,1]=$playerTwoCPU
+      elif [[ ${gameBoard[1,0]} == "+" ]]; then
+         gameBoard[1,0]=$playerTwoCPU
+      elif [[ ${gameBoard[1,2]} == "+" ]]; then
+         gameBoard[1,2]=$playerTwoCPU
+      elif [[ ${gameBoard[2,1]} == "+" ]]; then
+         gameBoard[2,1]=$playerTwoCPU
 		fi
 }
 wantToPlay(){
