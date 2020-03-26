@@ -3,7 +3,8 @@
 declare -A board
 
 # Variables
-
+user=0
+computer=1
 noOfRows=3
 noOfColumns=3
 X="x"
@@ -54,6 +55,20 @@ tossTheCoin(){
 	fi
 }
 
+function getTurn()
+{
+	firstTurn=$((RANDOM%2))
+	case $firstTurn in
+		$user)
+			 echo "User plays first"
+		;;
+		$computer)
+			 echo "Computer plays first"
+		;;
+	esac
+}
 displayBoard
 letterCheck
 tossTheCoin
+getTurn
+
