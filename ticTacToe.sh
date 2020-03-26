@@ -1,16 +1,13 @@
 #!/bin/bash -x
-
 declare -A gameBoard
 
-playerOne="a"
-playerTwoCPU="a"
 player="a"
 noOfTimePlay=0
-cPosition=0
 noOfRows=3
 noOfColumns=3
 temporaryVar=0
-count=0
+playerOne="X"
+playerTwoCPU="O"
 
 initializeBoard(){
 	for (( r=0; r<$noOfRows; r++ )); do
@@ -18,6 +15,8 @@ initializeBoard(){
 			gameBoard[$r,$c]="+"
 		done
 	done
+	echo "Player1 ==> X"
+	echo "Player2 ==> O"
 }
 displayBoard(){
 	for (( r=0; r<$noOfRows; r++ )); do
@@ -41,17 +40,15 @@ toss()
 	fi
 }
 startToPlay(){
-	playerOne="X"
-	playerTwoCPU="O"
-
 	while [[ $noOfTimePlay -lt 9 && $checkWinFlag -eq 0 ]]
 	do
 		if [[ $(($noOfTimePlay%2)) -eq $temporaryVar ]]; then
 			read -p "Enter Your Choice ==>" position
 			player=$playerOne
 		else
+			echo "Computer's Turn"
 			computerTurn
-			checkWin $playerVariable
+			checkWin $playerTwoCPU
 		fi
 		((noOfTimePlay++))
 		case $position in
@@ -79,7 +76,7 @@ startToPlay(){
 done
 }
 checkWin(){
-	local	player=$1
+	local player=$1
 
 	if [[ ${gameBoard[0,0]} == $player && ${gameBoard[0,1]} == $player &&  ${gameBoard[0,2]} == $player ]]; then
 		checkWinFlag=1
@@ -98,114 +95,215 @@ checkWin(){
 	elif [[ ${gameBoard[0,2]} == $player && ${gameBoard[1,1]} == $player &&  ${gameBoard[2,0]} == $player ]]; then
       		checkWinFlag=1
 	fi
-		if [[ $checkWinFlag -eq 1 ]]; then
-			echo "$player Won.."
+		if [[ $player == X && $checkWinFlag -eq 1 ]]; then
+			echo "Player1 Won.."
 			displayBoard
 			exit
+		elif [[ $player == O && $checkWinFlag -eq 1 ]]; then
+         	echo "Player2 CPU Won.."
+         	displayBoard
+         	exit
+		elif [[ $noOfTimePlay -eq 9 ]]; then
+			echo "Match Tied.."
 		fi
 }
 computerTurn(){
-		checkWinBlockPlay $playerTwoCPU
-			return
+				checkWinBlockPlay
+				return
 }
 checkWinBlockPlay(){
-		playerVariable=$1
 
-		if [[ ${gameBoard[0,0]} == "$playerVariable"  && ${gameBoard[0,1]} == "$playerVariable" && ${gameBoard[0,2]} == "+" ]]; then
+		if [[ ${gameBoard[0,0]} == "$playerTwoCPU"  && ${gameBoard[0,1]} == "$playerTwoCPU" && ${gameBoard[0,2]} == "+" ]]; then
 			gameBoard[0,2]=$playerTwoCPU
-		elif [[ ${gameBoard[1,0]} == "$playerVariable"  && ${gameBoard[1,1]} == "$playerVariable" && ${gameBoard[1,2]} == "+" ]]; then
+			return
+		elif [[ ${gameBoard[1,0]} == "$playerTwoCPU"  && ${gameBoard[1,1]} == "$playerTwoCPU" && ${gameBoard[1,2]} == "+" ]]; then
 			gameBoard[1,2]=$playerTwoCPU
-		elif [[ ${gameBoard[2,0]} == "$playerVariable"  && ${gameBoard[2,1]} == "$playerVariable" && ${gameBoard[2,2]} == "+" ]]; then
-			gameBoard[0,2]=$playerTwoCPU
-
-		elif [[ ${gameBoard[0,0]} == "$playerVariable"  && ${gameBoard[1,0]} == "$playerVariable" && ${gameBoard[2,0]} == "+" ]]; then
-			gameBoard[2,0]=$playerTwoCPU
-		elif [[ ${gameBoard[0,1]} == "$playerVariable"  && ${gameBoard[1,1]} == "$playerVariable" && ${gameBoard[2,1]} == "+" ]]; then
+			return
+		elif [[ ${gameBoard[2,0]} == "$playerTwoCPU"  && ${gameBoard[2,1]} == "$playerTwoCPU" && ${gameBoard[2,2]} == "+" ]]; then
 			gameBoard[2,2]=$playerTwoCPU
-		elif [[ ${gameBoard[0,2]} == "$playerVariable"  && ${gameBoard[1,2]} == "$playerVariable" && ${gameBoard[2,2]} == "+" ]]; then
-			gameBoard[2,2]=$playerTwoCPU
-
-		elif [[ ${gameBoard[0,0]} == "$playerVariable"  && ${gameBoard[1,1]} == "$playerVariable" && ${gameBoard[2,2]} == "+" ]]; then
-			gameBoard[2,2]=$playerTwoCPU
-		elif [[ ${gameBoard[0,2]} == "$playerVariable"  && ${gameBoard[1,1]} == "$playerVariable" && ${gameBoard[2,0]} == "+" ]]; then
+			return
+		elif [[ ${gameBoard[0,0]} == "$playerTwoCPU"  && ${gameBoard[1,0]} == "$playerTwoCPU" && ${gameBoard[2,0]} == "+" ]]; then
 			gameBoard[2,0]=$playerTwoCPU
-
-		elif [[ ${gameBoard[0,0]} == "+"  && ${gameBoard[0,1]} == "$playerVariable" && ${gameBoard[0,2]} == "$playerVariable" ]]; then
-			gameBoard[0,0]=$playerTwoCPU
-		elif [[ ${gameBoard[1,0]} == "+"  && ${gameBoard[1,1]} == "$playerVariable" && ${gameBoard[1,2]} == "$playerVariable" ]]; then
-			gameBoard[1,0]=$playerTwoCPU
-		elif [[ ${gameBoard[2,0]} == "+"  && ${gameBoard[2,1]} == "$playerVariable" && ${gameBoard[2,2]} == "$playerVariable" ]]; then
-			gameBoard[2,0]=$playerTwoCPU
-
-		elif [[ ${gameBoard[0,0]} == "+"  && ${gameBoard[1,0]} == "$playerVariable" && ${gameBoard[2,0]} == "$playerVariable" ]]; then
-			gameBoard[0,0]=$playerTwoCPU
-		elif [[ ${gameBoard[0,1]} == "+"  && ${gameBoard[1,1]} == "$playerVariable" && ${gameBoard[2,1]} == "$playerVariable" ]]; then
-			gameBoard[0,1]=$playerTwoCPU
-		elif [[ ${gameBoard[0,2]} == "+"  && ${gameBoard[1,2]} == "$playerVariable" && ${gameBoard[2,2]} == "$playerVariable" ]]; then
-			gameBoard[0,2]=$playerTwoCPU
-
-		elif [[ ${gameBoard[0,0]} == "+"  && ${gameBoard[1,1]} == "$playerVariable" && ${gameBoard[2,2]} == "$playerVariable" ]]; then
-			gameBoard[0,0]=$playerTwoCPU
-		elif [[ ${gameBoard[0,2]} == "+"  && ${gameBoard[1,1]} == "$playerVariable" && ${gameBoard[2,0]} == "$playerVariable" ]]; then
-			gameBoard[0,2]=$playerTwoCPU
-
-		elif [[ ${gameBoard[0,0]} == "$playerVariable"  && ${gameBoard[0,1]} == "+" && ${gameBoard[0,2]} == "$playerVariable" ]]; then
-			gameBoard[0,1]=$playerTwoCPU
-		elif [[ ${gameBoard[1,0]} == "$playerVariable"  && ${gameBoard[1,1]} == "+" && ${gameBoard[1,2]} == "$playerVariable" ]]; then
-			gameBoard[1,2]=$playerTwoCPU
-		elif [[ ${gameBoard[2,0]} == "$playerVariable"  && ${gameBoard[2,1]} == "+" && ${gameBoard[2,2]} == "$playerVariable" ]]; then
+			return
+		elif [[ ${gameBoard[0,1]} == "$playerTwoCPU"  && ${gameBoard[1,1]} == "$playerTwoCPU" && ${gameBoard[2,1]} == "+" ]]; then
 			gameBoard[2,1]=$playerTwoCPU
-
-		elif [[ ${gameBoard[1,0]} == "$playerVariable"  && ${gameBoard[1,0]} == "+" && ${gameBoard[2,0]} == "$playerVariable" ]]; then
+			return
+		elif [[ ${gameBoard[0,2]} == "$playerTwoCPU"  && ${gameBoard[1,2]} == "$playerTwoCPU" && ${gameBoard[2,2]} == "+" ]]; then
+			gameBoard[2,2]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,0]} == "$playerTwoCPU"  && ${gameBoard[1,1]} == "$playerTwoCPU" && ${gameBoard[2,2]} == "+" ]]; then
+			gameBoard[2,2]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,2]} == "$playerTwoCPU"  && ${gameBoard[1,1]} == "$playerTwoCPU" && ${gameBoard[2,0]} == "+" ]]; then
 			gameBoard[2,0]=$playerTwoCPU
-		elif [[ ${gameBoard[0,1]} == "$playerVariable"  && ${gameBoard[1,1]} == "+" && ${gameBoard[2,1]} == "$playerVariable" ]]; then
-			gameBoard[1,1]=$playerTwoCPU
-		elif [[ ${gameBoard[0,2]} == "$playerVariable"  && ${gameBoard[1,2]} == "+" && ${gameBoard[2,2]} == "$playerVariable" ]]; then
-			gameBoard[1,2]=$playerTwoCPU
-
-		elif [[ ${gameBoard[0,0]} == "$playerVariable"  && ${gameBoard[1,1]} == "+" && ${gameBoard[2,2]} == "$playerVariable" ]]; then
-			gameBoard[1,1]=$playerTwoCPU
-		elif [[ ${gameBoard[0,2]} == "$playerVariable"  && ${gameBoard[1,1]} == "+" && ${gameBoard[2,0]} == "$playerVariable" ]]; then
-			gameBoard[1,1]=$playerTwoCPU
-		# Recursively Call For Block Oppenent
-		elif [[ $count -eq 0 ]]; then
-					((count++))
-					checkWinBlockPlay $playerOne
-		# Corners
-		elif [[ ${gameBoard[0,0]} == "+" ]]; then
+			return
+		elif [[ ${gameBoard[0,0]} == "+"  && ${gameBoard[0,1]} == "$playerTwoCPU" && ${gameBoard[0,2]} == "$playerTwoCPU" ]]; then
 			gameBoard[0,0]=$playerTwoCPU
-		elif [[ ${gameBoard[0,2]} == "+" ]]; then
-         gameBoard[0,2]=$playerTwoCPU
-      elif [[ ${gameBoard[2,0]} == "+" ]]; then
-         gameBoard[2,0]=$playerTwoCPU
-      elif [[ ${gameBoard[2,2]} == "+" ]]; then
-         gameBoard[2,2]=$playerTwoCPU
-		#Centre
-		elif [[ ${gameBoard[1,1]} == "+" ]]; then
-         gameBoard[1,1]=$playerTwoCPU
-		# Sides
-		elif [[ ${gameBoard[0,1]} == "+" ]]; then
-         gameBoard[0,1]=$playerTwoCPU
-      elif [[ ${gameBoard[1,0]} == "+" ]]; then
-         gameBoard[1,0]=$playerTwoCPU
-      elif [[ ${gameBoard[1,2]} == "+" ]]; then
-         gameBoard[1,2]=$playerTwoCPU
-      elif [[ ${gameBoard[2,1]} == "+" ]]; then
-         gameBoard[2,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[1,0]} == "+"  && ${gameBoard[1,1]} == "$playerTwoCPU" && ${gameBoard[1,2]} == "$playerTwoCPU" ]]; then
+			gameBoard[1,0]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[2,0]} == "+"  && ${gameBoard[2,1]} == "$playerTwoCPU" && ${gameBoard[2,2]} == "$playerTwoCPU" ]]; then
+			gameBoard[2,0]=$playerTwoCPU
+			return
+
+		elif [[ ${gameBoard[0,0]} == "+"  && ${gameBoard[1,0]} == "$playerTwoCPU" && ${gameBoard[2,0]} == "$playerTwoCPU" ]]; then
+			gameBoard[0,0]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,1]} == "+"  && ${gameBoard[1,1]} == "$playerTwoCPU" && ${gameBoard[2,1]} == "$playerTwoCPU" ]]; then
+			gameBoard[0,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,2]} == "+"  && ${gameBoard[1,2]} == "$playerTwoCPU" && ${gameBoard[2,2]} == "$playerTwoCPU" ]]; then
+			gameBoard[0,2]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,0]} == "+"  && ${gameBoard[1,1]} == "$playerTwoCPU" && ${gameBoard[2,2]} == "$playerTwoCPU" ]]; then
+			gameBoard[0,0]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,2]} == "+"  && ${gameBoard[1,1]} == "$playerTwoCPU" && ${gameBoard[2,0]} == "$playerTwoCPU" ]]; then
+			gameBoard[0,2]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,0]} == "$playerTwoCPU"  && ${gameBoard[0,1]} == "+" && ${gameBoard[0,2]} == "$playerTwoCPU" ]]; then
+			gameBoard[0,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[1,0]} == "$playerTwoCPU"  && ${gameBoard[1,1]} == "+" && ${gameBoard[1,2]} == "$playerTwoCPU" ]]; then
+			gameBoard[1,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[2,0]} == "$playerTwoCPU"  && ${gameBoard[2,1]} == "+" && ${gameBoard[2,2]} == "$playerTwoCPU" ]]; then
+			gameBoard[2,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,0]} == "$playerTwoCPU"  && ${gameBoard[1,0]} == "+" && ${gameBoard[2,0]} == "$playerTwoCPU" ]]; then
+			gameBoard[1,0]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,1]} == "$playerTwoCPU"  && ${gameBoard[1,1]} == "+" && ${gameBoard[2,1]} == "$playerTwoCPU" ]]; then
+			gameBoard[1,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,2]} == "$playerTwoCPU"  && ${gameBoard[1,2]} == "+" && ${gameBoard[2,2]} == "$playerTwoCPU" ]]; then
+			gameBoard[1,2]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,0]} == "$playerTwoCPU"  && ${gameBoard[1,1]} == "+" && ${gameBoard[2,2]} == "$playerTwoCPU" ]]; then
+			gameBoard[1,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,2]} == "$playerTwoCPU"  && ${gameBoard[1,1]} == "+" && ${gameBoard[2,0]} == "$playerTwoCPU" ]]; then
+			gameBoard[1,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,0]} == "$playerOne"  && ${gameBoard[0,1]} == "$playerOne" && ${gameBoard[0,2]} == "+" ]]; then
+			gameBoard[0,2]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[1,0]} == "$playerOne"  && ${gameBoard[1,1]} == "$playerOne" && ${gameBoard[1,2]} == "+" ]]; then
+			gameBoard[1,2]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[2,0]} == "$playerOne"  && ${gameBoard[2,1]} == "$playerOne" && ${gameBoard[2,2]} == "+" ]]; then
+			gameBoard[2,2]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,0]} == "$playerOne"  && ${gameBoard[1,0]} == "$playerOne" && ${gameBoard[2,0]} == "+" ]]; then
+			gameBoard[2,0]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,1]} == "$playerOne"  && ${gameBoard[1,1]} == "$playerOne" && ${gameBoard[2,1]} == "+" ]]; then
+			gameBoard[2,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,2]} == "$playerOne"  && ${gameBoard[1,2]} == "$playerOne" && ${gameBoard[2,2]} == "+" ]]; then
+			gameBoard[2,2]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,0]} == "$playerOne"  && ${gameBoard[1,1]} == "$playerOne" && ${gameBoard[2,2]} == "+" ]]; then
+			gameBoard[2,2]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,2]} == "$playerOne"  && ${gameBoard[1,1]} == "$playerOne" && ${gameBoard[2,0]} == "+" ]]; then
+			gameBoard[2,0]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,0]} == "+"  && ${gameBoard[0,1]} == "$playerOne" && ${gameBoard[0,2]} == "$playerOne" ]]; then
+			gameBoard[0,0]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[1,0]} == "+"  && ${gameBoard[1,1]} == "$playerOne" && ${gameBoard[1,2]} == "$playerOne" ]]; then
+			gameBoard[1,0]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[2,0]} == "+"  && ${gameBoard[2,1]} == "$playerOne" && ${gameBoard[2,2]} == "$playerOne" ]]; then
+			gameBoard[2,0]=$playerTwoCPU
+			return
+
+		elif [[ ${gameBoard[0,0]} == "+"  && ${gameBoard[1,0]} == "$playerOne" && ${gameBoard[2,0]} == "$playerOne" ]]; then
+			gameBoard[0,0]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,1]} == "+"  && ${gameBoard[1,1]} == "$playerOne" && ${gameBoard[2,1]} == "$playerOne" ]]; then
+			gameBoard[0,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,2]} == "+"  && ${gameBoard[1,2]} == "$playerOne" && ${gameBoard[2,2]} == "$playerOne" ]]; then
+			gameBoard[0,2]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,0]} == "+"  && ${gameBoard[1,1]} == "$playerOne" && ${gameBoard[2,2]} == "$playerOne" ]]; then
+			gameBoard[0,0]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,2]} == "+"  && ${gameBoard[1,1]} == "$playerOne" && ${gameBoard[2,0]} == "$playerOne" ]]; then
+			gameBoard[0,2]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,0]} == "$playerOne"  && ${gameBoard[0,1]} == "+" && ${gameBoard[0,2]} == "$playerOne" ]]; then
+			gameBoard[0,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[1,0]} == "$playerOne"  && ${gameBoard[1,1]} == "+" && ${gameBoard[1,2]} == "$playerOne" ]]; then
+			gameBoard[1,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[2,0]} == "$playerOne"  && ${gameBoard[2,1]} == "+" && ${gameBoard[2,2]} == "$playerOne" ]]; then
+			gameBoard[2,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,0]} == "$playerOne"  && ${gameBoard[1,0]} == "+" && ${gameBoard[2,0]} == "$playerOne" ]]; then
+			gameBoard[1,0]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,1]} == "$playerOne"  && ${gameBoard[1,1]} == "+" && ${gameBoard[2,1]} == "$playerOne" ]]; then
+			gameBoard[1,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,2]} == "$playerOne"  && ${gameBoard[1,2]} == "+" && ${gameBoard[2,2]} == "$playerOne" ]]; then
+			gameBoard[1,2]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,0]} == "$playerOne"  && ${gameBoard[1,1]} == "+" && ${gameBoard[2,2]} == "$playerOne" ]]; then
+			gameBoard[1,1]=$playerTwoCPU
+			return
+		elif [[ ${gameBoard[0,2]} == "$playerOne"  && ${gameBoard[1,1]} == "+" && ${gameBoard[2,0]} == "$playerOne" ]]; then
+			gameBoard[1,1]=$playerTwoCPU
+			return
+		#Corners
+         elif [[ ${gameBoard[0,0]} == "+" ]]; then
+         		gameBoard[0,0]=$playerTwoCPU
+				return
+         elif [[ ${gameBoard[0,2]} == "+" ]]; then
+               gameBoard[0,2]=$playerTwoCPU
+				return
+         elif [[ ${gameBoard[2,0]} == "+" ]]; then
+         		gameBoard[2,0]=$playerTwoCPU
+				return
+         elif [[ ${gameBoard[2,2]} == "+" ]]; then
+         		gameBoard[2,2]=$playerTwoCPU
+				return
+      # Center
+         elif [[ ${gameBoard[1,1]} == "+" ]]; then
+				gameBoard[1,1]=$playerTwoCPU
+				return
+      # Sides
+         elif [[ ${gameBoard[0,1]} == "+" ]]; then
+               	gameBoard[0,1]=$playerTwoCPU
+				return
+         elif [[ ${gameBoard[1,0]} == "+" ]]; then
+            	gameBoard[1,0]=$playerTwoCPU
+				return
+         elif [[ ${gameBoard[1,2]} == "+" ]]; then
+				gameBoard[1,2]=$playerTwoCPU
+				return
+         elif [[ ${gameBoard[2,1]} == "+" ]]; then
+				gameBoard[2,1]=$playerTwoCPU
+				return
 		fi
 }
 wantToPlay(){
    read -p "Would You Like To Start game Y/N ?" isStart
-   if [[ $isStart == Y || $isStart == y ]]; then
+   
+	if [[ $isStart == Y || $isStart == y ]]; then
 		read -p "Would You Like To Toss..? Y/N " isToss
-			if [[ $isToss == Y || $isToss == y ]]; then
-				toss
-			else
-				echo "Okay..Starting Game"
-      		startToPlay
-			fi
-   else
-      	echo "Exiting.."
+		if [[ $isToss == Y || $isToss == y ]]; then
+			toss
+		else
+			echo "Okay..Starting Game"
+			startToPlay
+		fi
+	else
+      	echo "Exiting..."
 	exit
    fi
 }
